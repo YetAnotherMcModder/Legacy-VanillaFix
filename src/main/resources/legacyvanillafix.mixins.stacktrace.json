@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "piper74.legacy.vanillafix.stacktrace.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  "MixinCrashReport",
+  "MixinCrashReportSection",
+  "CrashReportSectionElementMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

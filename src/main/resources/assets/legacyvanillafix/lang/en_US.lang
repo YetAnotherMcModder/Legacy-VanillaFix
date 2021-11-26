@@ -1,0 +1,33 @@
+legacy.vanillafix.gui.uploadReportAndCopyLink=Upload and copy link
+legacy.vanillafix.gui.openCrashReport=Open Crash Report
+legacy.vanillafix.gui.failed=[Failed]
+legacy.vanillafix.crashscreen.identificationErrored=[Error identifying]
+legacy.vanillafix.crashscreen.unknownCause=Unknown
+legacy.vanillafix.gui.toTitle=Return to main menu
+
+legacy.vanillafix.crashscreen.title=Minecraft crashed!
+legacy.vanillafix.crashscreen.summary=Minecraft ran into a problem and crashed.
+legacy.vanillafix.crashscreen.paragraph1.line1=The following mod(s) have been identified as potential causes:
+legacy.vanillafix.crashscreen.paragraph2.line1=A report has been generated, click the button below to open:
+legacy.vanillafix.crashscreen.paragraph3.line1=You're encouraged to send this report's link to the mod's author to help
+legacy.vanillafix.crashscreen.paragraph3.line2=them fix the issue, click the "Upload and Copy link" to upload the report
+legacy.vanillafix.crashscreen.paragraph3.line3=and copy its link to clipboard. Since Legacy Vanillafix is installed, you
+legacy.vanillafix.crashscreen.paragraph3.line4=can keep playing despite the crash.
+
+legacy.vanillafix.initerrorscreen.title=Minecraft failed to start!
+legacy.vanillafix.initerrorscreen.summary=An error during startup prevented Minecraft from starting.
+legacy.vanillafix.initerrorscreen.paragraph2.line1=A report has been generated, click the button below to open:
+legacy.vanillafix.initerrorscreen.paragraph3.line1=You're encouraged to send this report's link to the mod's author to help
+legacy.vanillafix.initerrorscreen.paragraph3.line2=them fix the issue, click the "Upload and Copy link" to upload the report
+legacy.vanillafix.initerrorscreen.paragraph3.line3=and copy its link to clipboard. Since Legacy Vanillafix is installed, you
+legacy.vanillafix.initerrorscreen.paragraph3.line4=can keep playing despite the crash.
+
+legacy.vanillafix.config.disableinitalchunkload=Disable inital chunkload
+legacy.vanillafix.config.disableinitalchunkload.tooltip=Disable loading spawn chunks (289 chunks). You will see partially loaded chunks. (Potentially unsafe)
+legacy.vanillafix.config.allowguisinnetherportals=Allow GUIs in nether portals
+legacy.vanillafix.config.allowguisinnetherportals.tooltip=Allows opening GUIs in nether portals.
+legacy.vanillafix.config.fasterDimensionChange=Faster dimension change
+legacy.vanillafix.config.fasterDimensionChange.tooltip=Removes the loading terrain screen for faster loading.
+legacy.vanillafix.config.betterCrashes=Better crashes
+legacy.vanillafix.config.betterCrashes.tooltip=Better crashes prevents your game from fully crashing, it rather offers you the option to go back to the main menu.
+legacy.vanillafix.config.note=NOTE: You need to restart the game in order for the changes to take effect.

@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "piper74.legacy.vanillafix.bugs.mixins",
+  "plugin": "piper74.legacy.vanillafix.bugs.BugFixMixinPlugin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  "MixinMinecraftServer"
+  ],
+  "client": [
+    "ClientPlayerEntityMixin",
+    "ClientPlayNetworkHandlerMixin",
+	"MixinIntegratedServer",
+	"GameRendererMixin",
+    "F11FixMixin",
+	"PlayerEntityRendererMixin",
+    "SkullBlockEntityRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1,
+	"maxShiftBy": 1
+  }
+}
