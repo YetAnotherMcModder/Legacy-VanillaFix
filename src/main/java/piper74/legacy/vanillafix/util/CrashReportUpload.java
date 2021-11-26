@@ -25,11 +25,11 @@ import java.util.Map;
 public class CrashReportUpload {
 
     private static String GIST_ACCESS_TOKEN_PART_1() {
-        return "ghp_brEwCNAAB14PQfm";
+        return "ghp_6KZYGownOFo2lYm";
     }
 
     private static String GIST_ACCESS_TOKEN_PART_2() {
-        return "RAnKSBcqq5AsKU00PXVZt";
+        return "TC7ADZTSbY3kh813jc50S";
     }
 
     // I don't think there's any security problem because the token can only upload gists,

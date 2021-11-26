@@ -9,7 +9,9 @@
     "piper74"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/legacyvanillafix/"
+    "homepage": "https://modrinth.com/mod/legacyvanillafix/",
+	"issues" : "https://github.com/YetAnotherMcModder/Legacy-VanillaFix/issues",
+	"sources" : "https://github.com/YetAnotherMcModder/Legacy-VanillaFix"
   },
 
   "license": "MIT",
@@ -24,9 +26,6 @@
 	"piper74.legacy.vanillafix.config.ModMenuIntegration"
 	]
   },
-  "custom": {
-    "modmenu:clientsideOnly": true
-	},
   "mixins": [
     "legacyvanillafix.mixins.bugs.json",
 	"legacyvanillafix.mixins.stacktrace.json",
