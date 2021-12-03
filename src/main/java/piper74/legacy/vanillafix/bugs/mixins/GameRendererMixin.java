@@ -26,8 +26,8 @@ public class GameRendererMixin {
 	 * @reason Fixes camera getting stuck on transparent blocks
 	 * @author piper74
 	 */
-	@Redirect(method = "transformCamera(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;raycast(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/hit/HitResult;"), expect = 0 )
-	private HitResult raycast(ClientWorld world, Vec3d vec3d, Vec3d vec3d2) {
+	@Redirect(method = "transformCamera(F)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientWorld;rayTrace(Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/hit/HitResult;"), expect = 0 )
+	private HitResult rayTrace(ClientWorld world, Vec3d vec3d, Vec3d vec3d2) {
 		return world.rayTrace(vec3d, vec3d2, false, true, false);
 	}
 }
