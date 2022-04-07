@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.ClientPlayerEntity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

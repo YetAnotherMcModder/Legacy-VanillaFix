@@ -10,6 +10,7 @@ package piper74.legacy.vanillafix.util;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.OptionButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.crash.CrashReport;
 
@@ -25,9 +26,11 @@ public class GuiInitErrorScreen extends GuiProblemScreen{
     @Override
     public void init() {
         //mc.setIngameNotInFocus();
+        client.focused = false;
+        super.init();
         this.buttons.clear();
-        this.buttons.add(new ButtonWidget(1,width / 2 - 155, height / 4 + 120 + 12, 150, 20, I18n.translate("legacy.vanillafix.gui.openCrashReport")));
-        this.buttons.add(new ButtonWidget(2, width / 2 - 155 + 160, height / 4 + 120 + 12, 150, 20, I18n.translate("legacy.vanillafix.gui.uploadReportAndCopyLink")));
+        this.buttons.add(new OptionButtonWidget(1,width / 2 - 155, height / 4 + 120 + 12, 150, 20, I18n.translate("legacy.vanillafix.gui.openCrashReport")));
+        this.buttons.add(new OptionButtonWidget(2, width / 2 - 155 + 160, height / 4 + 120 + 12, 150, 20, I18n.translate("legacy.vanillafix.gui.uploadReportAndCopyLink")));
     }
 
     @Override

@@ -13,11 +13,15 @@ import java.util.Set;
 public interface PatchedCrashReport {
 
     Set<ModMetadata> getSuspectedMods();
-	
-    interface Element {
 
-        String invokeGetName();
+    // Removed this beacuse it was never used in the code,
+    // but it was causing a mixin error in 1.8
+    // Unused
 
-        String invokeGetDetail();
-    }
+    //interface Element {
+    //
+    //    String invokeGetName();
+    //
+    //    String invokeGetDetail();
+    //}
 }

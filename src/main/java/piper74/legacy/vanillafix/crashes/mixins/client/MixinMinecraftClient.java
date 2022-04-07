@@ -6,15 +6,28 @@
 
 package piper74.legacy.vanillafix.crashes.mixins.client;
 
+import com.mojang.blaze3d.platform.GLX;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.resource.AssetsIndex;
+import net.minecraft.client.resource.ResourcePackLoader;
+import net.minecraft.client.resource.language.LanguageManager;
+import net.minecraft.client.sound.SoundManager;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.options.GameOptions;
+import net.minecraft.resource.*;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.MetadataSerializer;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashException;
+import net.minecraft.world.level.LevelInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 //import org.spongepowered.asm.mixin.Final;
@@ -26,6 +39,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 
 //import net.minecraft.network.ClientConnection;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import piper74.legacy.vanillafix.LegacyVanillaFix;
 import piper74.legacy.vanillafix.config.LegacyVanillaFixConfig;
 
@@ -43,7 +59,9 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.util.ThreadExecutor;
 import net.minecraft.util.snooper.Snoopable;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Queue;
 
@@ -71,9 +89,6 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 	
 	@Shadow
 	public abstract CrashReport addSystemDetailsToCrashReport(CrashReport crashReport);
-	
-	@Shadow
-	public abstract void cleanHeap();
 	
 	@Shadow
 	public abstract void stop();
@@ -108,10 +123,60 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 	@Shadow
 	public void connect(ClientWorld world) {}
 
-    private static int clientCrashCount = 0;
+	@Shadow public boolean focused;
+	@Shadow private boolean glErrors;
+	private static int clientCrashCount = 0;
     private static int serverCrashCount = 0;
-	
-    /**
+
+	@Shadow
+	private ReloadableResourceManager resourceManager;
+
+	@Shadow
+	private ResourcePackLoader loader;
+
+	@Shadow
+	private LanguageManager languageManager;
+
+	@Shadow
+	private final MetadataSerializer metadataSerializer = new MetadataSerializer();
+
+	@Shadow
+	public void stitchTextures() {}
+
+	@Shadow
+	public TextRenderer textRenderer;
+	@Shadow
+	public TextRenderer shadowTextRenderer;
+	@Shadow
+	public Screen currentScreen;
+	@Shadow
+	private TextureManager textureManager;
+	@Shadow
+	private SoundManager soundManager;
+
+	@Shadow
+	public int width;
+
+	@Shadow
+	public int height;
+
+	@Shadow
+	private void setDefaultIcon() {}
+
+	@Shadow
+	private void setDisplayBounds() throws LWJGLException {}
+
+	@Shadow
+	private void setPixelFormat() throws LWJGLException {}
+
+	@Mutable
+	@Final
+	@Shadow
+	private DefaultResourcePack defaultResourcePack;
+
+	@Shadow @Final private List<ResourcePack> resourcePacks;
+
+	/**
      * @author Runemoro
      * @reason Overwrite Minecraft.run()
      */
@@ -129,9 +194,12 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
          this.printCrashReport(addSystemDetailsToCrashReport(crashReport2));
          //return;
 		 this.stop();
+		  //displayInitErrorScreen(crashReport2);
+		  //return;
       }
 
-	
+
+
 	  
 	  while(running) {
 			  if (!crashed || crashReport == null) {
@@ -141,10 +209,10 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
                      clientCrashCount++;
 					 addSystemDetailsToCrashReport(e.getReport());
 					 addInfoToCrash(e.getReport());
-					 if (config.betterCrashes)
+					 //if (config.betterCrashes)
 					 resetGameState();
-						else
-						cleanHeap();
+						//else
+						//cleanHeap();
 					 LOGGER.fatal("Reported exception thrown!", e);
 					 if (config.betterCrashes) {
 					 displayCrashScreen(e.getReport(), clientCrashCount);
@@ -157,10 +225,10 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 					 CrashReport report = new CrashReport("Unexpected error", e);
 					 addSystemDetailsToCrashReport(report);
 					 addInfoToCrash(report);
-					 if (config.betterCrashes)
+					 //if (config.betterCrashes)
 					 resetGameState();
-						else
-						cleanHeap();
+						//else
+						//cleanHeap();
 					 LOGGER.fatal("Unreported exception thrown!", e);
 					 if (config.betterCrashes) {
 					 displayCrashScreen(report, clientCrashCount);
@@ -173,7 +241,8 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 			  serverCrashCount++;
 			  addInfoToCrash(crashReport2);
 			  // FREE MEMORY HERE!
-			  Runtime.getRuntime().freeMemory();
+			  //Runtime.getRuntime().freeMemory();
+			  cleanHeap();
 			  displayCrashScreen(crashReport2, serverCrashCount);
 			  crashed = false;
 			  crashReport2 = null;
@@ -230,6 +299,19 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
         }
     }
 
+	/**
+	 * @author Runemoro
+	 * @reason Disconnect from the current world and free memory, using a memory reserve
+	 * to make sure that an OutOfMemory doesn't happen while doing this.
+	 * <p>
+	 * Bugs Fixed:
+	 * - https://bugs.mojang.com/browse/MC-128953
+	 * - Memory reserve not recreated after out-of memory
+	 **/
+	@Overwrite
+	public void cleanHeap() {
+		resetGameState();
+	}
 	
 	 /**
      * @author Runemoro
@@ -262,6 +344,24 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
         }
     }
 
+
+	public void displayInitErrorScreen() {
+		//MinecraftClient.getInstance().
+		//crashReport = CrashReport.create(var11, "Initializing game");
+		//crashReport.addElement("Initialization");
+
+		CrashUtils.outputReport(crashReport2);
+		try {
+
+			this.openScreen(new GuiInitErrorScreen(crashReport2));
+		} catch (Throwable t) {
+			CrashReport additionalReport = CrashReport.create(t, "Displaying init error screen");
+			LOGGER.error("An uncaught exception occured while displaying the init error screen, making normal report instead", t);
+			printCrashReport(additionalReport);
+			System.exit(additionalReport.getFile() != null ? -1 : -2);
+		}
+	}
+
 	 /**
      * @author Runemoro
      * @reason
@@ -271,7 +371,20 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
     public void printCrashReport(CrashReport report) {
         CrashUtils.outputReport(report);
     }
-	
+
+	/****
+	 * @author ZombieHDGaming
+	 * @reason removes a call to system.gc() to make world loading faster
+	****/
+
+	// breaks loading of singleplayer worlds
+	/*
+	@Inject(method="startGame", at = @At(value = "INVOKE", target = "Ljava/lang/System;gc()V"), cancellable = true)
+	public void startGame(String worldName, String string, LevelInfo levelInfo, CallbackInfo ci) {
+		ci.cancel();
+	}
+	*/
+
 }
 
 

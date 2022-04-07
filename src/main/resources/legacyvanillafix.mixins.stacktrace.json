@@ -5,8 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   "MixinCrashReport",
-  "MixinCrashReportSection",
-  "CrashReportSectionElementMixin"
+  "MixinCrashReportSection"
   ],
   "client": [
   ],

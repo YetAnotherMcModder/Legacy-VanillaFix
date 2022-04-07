@@ -10,7 +10,6 @@
   "client": [
     "ClientPlayerEntityMixin",
     "ClientPlayNetworkHandlerMixin",
-	"MixinIntegratedServer",
 	"GameRendererMixin",
     "F11FixMixin",
 	"PlayerEntityRendererMixin",

@@ -92,6 +92,7 @@ public final class ModIdentifier {
         }
     }
 
+    @SuppressWarnings("deprecated")
     private static Map<URI, Set<ModMetadata>> makeModMap() {
         Map<URI, Set<ModMetadata>> modMap = new HashMap<>();
         for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {

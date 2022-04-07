@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version "0.7-SNAPSHOT" // To use chocoloom, change the version to a commit hash
+	id 'fabric-loom' version "0.12-SNAPSHOT" // To use chocoloom, change the version to a commit hash
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -15,18 +15,18 @@ repositories {
 		name = "legacy-fabric"
 		url = "https://maven.legacyfabric.net"
 	}
-	mavenCentral()
 }
 
-minecraft {
-	// Comment out this block if you're using Chocoloom
-	intermediaryUrl = {
-		return "https://maven.legacyfabric.net/net/fabricmc/intermediary/" + it + "/intermediary-" + it + "-v2.jar";
-	}
-}
 loom {
-// Uncomment when using loom 0.10
-//	setIntermediaryUrl('https://maven.legacyfabric.net/net/fabricmc/intermediary/%1$s/intermediary-%1$s-v2.jar');
+	setIntermediaryUrl('https://maven.legacyfabric.net/net/fabricmc/intermediary/%1$s/intermediary-%1$s-v2.jar');
+	customMinecraftManifest.set("https://meta.legacyfabric.net/v2/manifest/${minecraft_version}")
+
+	// Required by 1.7.x
+	// runs {
+	// 	client {
+	// 		programArgs "--userProperties", "{}"
+	// 	}
+	// }
 }
 
 dependencies {
@@ -34,13 +34,14 @@ dependencies {
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
+	// Only available for 1.8.9 as of March 20 of 2022.
 	// Fabric API provides hooks for events, item registration, and more. As most mods will need this, it's included by default. 
 	// If you know for a fact you don't, it's not required and can be safely removed.
-	modImplementation include( "net.legacyfabric.legacy-fabric-api:legacy-fabric-resource-loader-v1:1.0.0+1e58a10239" ) // The latest version of the resource loader is broken, so im stuck with this
-	modImplementation include( "net.legacyfabric.legacy-fabric-api:legacy-fabric-crash-report-info-v1:1.0.0+bb775ea439" )
-	modImplementation "io.github.boogiemonster1o1:modmenu:${modmenu_version}"
+	//modImplementation ("net.legacyfabric.legacy-fabric-api:legacy-fabric-api:${fabric_version}") {
+	//	exclude module: "fabric-loader-1.8.9"
+	//}
+	//modImplementation "io.github.boogiemonster1o1:modmenu:${modmenu_version}"
 
-	// Hacks that make mac os work
 	if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 		implementation 'org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209'
 		implementation 'org.lwjgl.lwjgl:lwjgl:2.9.4-nightly-20150209'
@@ -48,7 +49,6 @@ dependencies {
 	}
 }
 
-// More hacks that make mac os work
 if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 	configurations.all {
 		resolutionStrategy {
@@ -74,11 +74,7 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile).configureEach {
 	it.options.encoding = "UTF-8"
-
-	if (JavaVersion.current().isJava9Compatible()) {
-		 it.options.release = 8
-	}
-
+	if (JavaVersion.current().isJava9Compatible()) it.options.release = 8
 }
 
 java {
@@ -89,8 +85,8 @@ java {
 }
 
 jar {
-	from ("LICENSE") {
-			rename { "${it}_${project.archivesBaseName}"}
+	from("LICENSE") {
+		rename { "${it}_${project.archivesBaseName}" }
 	}
 }
 

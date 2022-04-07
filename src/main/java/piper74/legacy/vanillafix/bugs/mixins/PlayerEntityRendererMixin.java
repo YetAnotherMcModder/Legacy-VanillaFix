@@ -3,6 +3,8 @@
 
 package piper74.legacy.vanillafix.bugs.mixins;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -17,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@Environment(EnvType.CLIENT)
 @Mixin(PlayerEntityRenderer.class)
 public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<AbstractClientPlayerEntity> {
 
@@ -52,17 +55,17 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
      * @reason Enables semi-transparency on arms
      */
     @Overwrite
-    public void method_4121(AbstractClientPlayerEntity abstractClientPlayerEntity) {
-        float f = 1.0F;
+    public void method_10305(AbstractClientPlayerEntity abstractClientPlayerEntity) {
+        float f = 1.0f;
         GlStateManager.color3f(f, f, f);
         PlayerEntityModel playerEntityModel = this.getModel();
         this.setModelPose(abstractClientPlayerEntity);
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-        playerEntityModel.field_3797 = 0.0F;
-        playerEntityModel.field_3790 = false;
+        playerEntityModel.field_1490 = 0.0f;
+        playerEntityModel.field_1484 = false;
         playerEntityModel.setAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, abstractClientPlayerEntity);
-        playerEntityModel.method_3060();
+        playerEntityModel.method_9640();
         GlStateManager.disableBlend();
     }
 
@@ -71,17 +74,17 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
      * @reason Enables semi-transparency on arms
      */
     @Overwrite
-    public void method_4122(AbstractClientPlayerEntity abstractClientPlayerEntity) {
-        float f = 1.0F;
+    public void method_10306(AbstractClientPlayerEntity abstractClientPlayerEntity) {
+        float f = 1.0f;
         GlStateManager.color3f(f, f, f);
         PlayerEntityModel playerEntityModel = this.getModel();
         this.setModelPose(abstractClientPlayerEntity);
         GlStateManager.enableBlend();
         GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-        playerEntityModel.field_3790 = false;
-        playerEntityModel.field_3797 = 0.0F;
-        playerEntityModel.setAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, abstractClientPlayerEntity);
-        playerEntityModel.method_3061();
+        playerEntityModel.field_1484 = false;
+        playerEntityModel.field_1490 = 0.0f;
+        playerEntityModel.setAngles(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f, abstractClientPlayerEntity);
+        playerEntityModel.method_9641();
         GlStateManager.disableBlend();
     }
 

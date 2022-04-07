@@ -1,9 +1,9 @@
 package piper74.legacy.vanillafix.config;
 
-import io.github.prospector.modmenu.api.ModMenuApi;
 import piper74.legacy.vanillafix.LegacyVanillaFix;
 import net.minecraft.client.gui.screen.Screen;
 
+/*
 import java.util.function.Function;
 
 public class ModMenuIntegration implements ModMenuApi {
@@ -17,3 +17,4 @@ public class ModMenuIntegration implements ModMenuApi {
         return LegacyVanillaFix.MOD_ID;
     }
 }
+*/
