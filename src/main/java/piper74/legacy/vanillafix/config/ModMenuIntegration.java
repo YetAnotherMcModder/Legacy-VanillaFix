@@ -3,6 +3,9 @@ package piper74.legacy.vanillafix.config;
 import piper74.legacy.vanillafix.LegacyVanillaFix;
 import net.minecraft.client.gui.screen.Screen;
 
+// TODO:
+// Get this working in version 1.0.9
+
 /*
 import java.util.function.Function;
 

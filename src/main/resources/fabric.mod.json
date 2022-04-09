@@ -21,10 +21,7 @@
   "entrypoints": {
     "main": [
       "piper74.legacy.vanillafix.LegacyVanillaFix"
-    ],
-	"modmenu": [
-	"piper74.legacy.vanillafix.config.ModMenuIntegration"
-	]
+    ]
   },
   "mixins": [
     "legacyvanillafix.mixins.bugs.json",
