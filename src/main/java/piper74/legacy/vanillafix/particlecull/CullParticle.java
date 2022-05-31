@@ -2,7 +2,7 @@ package piper74.legacy.vanillafix.particlecull;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.render.debug.CameraView;
+import net.minecraft.client.render.CameraView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import piper74.legacy.vanillafix.LegacyVanillaFix;
@@ -25,10 +25,7 @@ public class CullParticle {
 
         if(camera != null)
         {
-            if (camera.isBoxInFrustum(instance.getBoundingBox()))
-            {
-                return true;
-            }
+            return camera.isBoxInFrustum(instance.getBoundingBox());
         }
 
         return false;

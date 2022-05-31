@@ -33,7 +33,12 @@ public class TraceUtils {
 					ClassInfo classInfo = ClassInfo.fromCache(className);
 					if (classInfo != null) {
 						// Workaround for bug in Mixin, where it adds to the wrong thing :(
-						Method getMixins = ClassInfo.class.getDeclaredMethod("getMixins");
+
+						// getAppliedMixins is broken, because the mixininfo is added to the wrong thing,
+						// due to this problem, getAppliedMixins always returns empty/none
+						// https://github.com/SpongePowered/Mixin/pull/529
+						// TODO: Disable Mixins in StackTrace properly
+						Method getMixins = ClassInfo.class.getDeclaredMethod("getAppliedMixins");
 						getMixins.setAccessible(true);
 						@SuppressWarnings("unchecked")
 						Set<IMixinInfo> mixinInfoSet = (Set<IMixinInfo>) getMixins.invoke(classInfo);

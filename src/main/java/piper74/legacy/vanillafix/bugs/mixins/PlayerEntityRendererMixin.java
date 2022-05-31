@@ -15,8 +15,10 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Environment(EnvType.CLIENT)
@@ -32,6 +34,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
 
 
     @Shadow public abstract PlayerEntityModel getModel();
+
 
     /**
      * @author piper74
@@ -55,7 +58,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
      * @reason Enables semi-transparency on arms
      */
     @Overwrite
-    public void method_10305(AbstractClientPlayerEntity abstractClientPlayerEntity) {
+    public void renderRightArm(AbstractClientPlayerEntity abstractClientPlayerEntity) {
         float f = 1.0f;
         GlStateManager.color3f(f, f, f);
         PlayerEntityModel playerEntityModel = this.getModel();
@@ -65,7 +68,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
         playerEntityModel.field_1490 = 0.0f;
         playerEntityModel.field_1484 = false;
         playerEntityModel.setAngles(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, abstractClientPlayerEntity);
-        playerEntityModel.method_9640();
+        playerEntityModel.renderRightArm();
         GlStateManager.disableBlend();
     }
 
@@ -74,7 +77,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
      * @reason Enables semi-transparency on arms
      */
     @Overwrite
-    public void method_10306(AbstractClientPlayerEntity abstractClientPlayerEntity) {
+    public void renderLeftArm(AbstractClientPlayerEntity abstractClientPlayerEntity) {
         float f = 1.0f;
         GlStateManager.color3f(f, f, f);
         PlayerEntityModel playerEntityModel = this.getModel();
@@ -84,7 +87,7 @@ public abstract class PlayerEntityRendererMixin extends LivingEntityRenderer<Abs
         playerEntityModel.field_1484 = false;
         playerEntityModel.field_1490 = 0.0f;
         playerEntityModel.setAngles(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0625f, abstractClientPlayerEntity);
-        playerEntityModel.method_9641();
+        playerEntityModel.renderLeftArm();
         GlStateManager.disableBlend();
     }
 

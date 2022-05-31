@@ -137,8 +137,10 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 	@Shadow
 	private LanguageManager languageManager;
 
+	@Final
+	@Mutable
 	@Shadow
-	private final MetadataSerializer metadataSerializer = new MetadataSerializer();
+	private MetadataSerializer metadataSerializer = new MetadataSerializer();
 
 	@Shadow
 	public void stitchTextures() {}

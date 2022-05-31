@@ -3,7 +3,7 @@ package piper74.legacy.vanillafix.particlecull.mixins;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.debug.CameraView;
+import net.minecraft.client.render.CameraView;
 import net.minecraft.entity.Entity;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;

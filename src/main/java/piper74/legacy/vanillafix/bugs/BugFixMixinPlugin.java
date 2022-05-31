@@ -1,7 +1,6 @@
 package piper74.legacy.vanillafix.bugs;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import piper74.legacy.vanillafix.LegacyVanillaFix;
@@ -26,23 +25,15 @@ public class BugFixMixinPlugin implements IMixinConfigPlugin {
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
 		if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.ClientPlayNetworkHandlerMixin")) {
-			if (!config.fasterDimensionChange)
-				return false;
+			return config.fasterDimensionChange;
 		} else if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.ClientPlayerEntityMixin")) {
-			if (!config.allowGUIsInNetherPortals)
-				return false;
+			return config.allowGUIsInNetherPortals;
 		} else if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.MixinMinecraftServer")) {
-			if (!config.disableInitialChunkLoad)
-				return false;
-		} else if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.GameRendererMixin")) {
-			if (!config.F5Fix)
-				return false;
+			return config.disableInitialChunkLoad;
 		} else if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.F11FixMixin")) {
-			if (!config.F11Fix)
-				return false;
+			return config.F11Fix;
 		} else if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.PlayerEntityRendererMixin") || mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.SkullBlockEntityRendererMixin")) {
-			if (!config.enableSkinSemiTransparency)
-				return false;
+			return config.enableSkinSemiTransparency;
 			}
 		return true;
 	}
