@@ -20,6 +20,7 @@ public class LegacyVanillaFixConfig {
     public boolean F5Fix = true;
     public boolean F11Fix = true;
 	public boolean enableSkinSemiTransparency = true;
+    public boolean handBugFix = true;
     public boolean skyDarknessFix = true;
     public boolean cullParticles = true;
 	
