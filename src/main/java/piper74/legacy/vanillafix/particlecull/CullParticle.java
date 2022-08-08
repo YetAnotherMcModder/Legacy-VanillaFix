@@ -25,7 +25,7 @@ public class CullParticle {
 
         if(camera != null)
         {
-            return camera.isBoxInFrustum(instance.getBoundingBox());
+            return camera.isBoxInFrustum(instance.method_12254());
         }
 
         return false;

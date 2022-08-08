@@ -12,9 +12,7 @@
     "ClientPlayNetworkHandlerMixin",
 	"MixinIntegratedServer",
 	"GameRendererMixin",
-    "F11FixMixin",
-	"PlayerEntityRendererMixin",
-    "SkullBlockEntityRendererMixin"
+    "F11FixMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

@@ -32,9 +32,7 @@ public class BugFixMixinPlugin implements IMixinConfigPlugin {
 			return config.disableInitialChunkLoad;
 		} else if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.F11FixMixin")) {
 			return config.F11Fix;
-		} else if (mixinClassName.contains("piper74.legacy.vanillafix.bugs.mixins.SkullBlockEntityRendererMixin")) {
-			return config.enableSkinSemiTransparency;
-			}
+		}
 		return true;
 	}
 

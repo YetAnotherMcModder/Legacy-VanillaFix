@@ -19,8 +19,12 @@ public class LegacyVanillaFixConfig {
 	public boolean disableInitialChunkLoad = false;
     public boolean F5Fix = true;
     public boolean F11Fix = true;
-	public boolean enableSkinSemiTransparency = true;
-    public boolean handBugFix = true;
+
+    // REMOVED
+    // These features are already in 1.9
+
+	//public boolean enableSkinSemiTransparency = true;
+    //public boolean handBugFix = true;
     public boolean skyDarknessFix = true;
     public boolean cullParticles = true;
 	
