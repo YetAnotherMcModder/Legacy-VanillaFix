@@ -10,60 +10,48 @@ import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.MouseInput;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.resource.AssetsIndex;
+import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.render.ClientTickTracker;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.resource.ResourcePackLoader;
 import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.options.GameOptions;
-import net.minecraft.resource.*;
+import net.minecraft.resource.DefaultResourcePack;
+import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.resource.ReloadableResourceManagerImpl;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.MetadataSerializer;
-import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.ThreadExecutor;
 import net.minecraft.util.crash.CrashException;
-import net.minecraft.world.level.LevelInfo;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.snooper.Snoopable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-//import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.*;
-
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.GL11;
-
-//import net.minecraft.network.ClientConnection;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.*;
 import piper74.legacy.vanillafix.LegacyVanillaFix;
 import piper74.legacy.vanillafix.config.LegacyVanillaFixConfig;
-
-import piper74.legacy.vanillafix.util.CrashUtils;
-import piper74.legacy.vanillafix.util.GuiCrashScreen;
-import piper74.legacy.vanillafix.util.GuiInitErrorScreen;
-import piper74.legacy.vanillafix.util.StateManager;
-import piper74.legacy.vanillafix.util.GlUtil;
-import net.minecraft.text.LiteralText;
-import net.minecraft.client.gui.hud.InGameHud;
-
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.font.TextRenderer;
-
-import net.minecraft.util.ThreadExecutor;
-import net.minecraft.util.snooper.Snoopable;
+import piper74.legacy.vanillafix.util.*;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * @author Runemoro
@@ -178,6 +166,43 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 
 	@Shadow @Final private List<ResourcePack> resourcePacks;
 
+	@Shadow
+	private Framebuffer fbo;
+	@Shadow public MouseInput mouse;
+
+	@Shadow public abstract void updateDisplay();
+
+	@Shadow protected abstract void setGlErrorMessage(String message);
+
+	@Shadow private int attackCooldown;
+
+	@Mutable
+	@Final
+	@Shadow
+	private File resourcePackDir;
+
+	@Mutable
+	@Final
+	@Shadow
+	public File runDirectory;
+
+	@Shadow
+	private void initializeTimerHackThread() {}
+
+	@Shadow
+	public GameRenderer gameRenderer;
+
+	@Shadow
+	private void registerMetadataSerializers() {}
+
+	@Shadow
+	public WorldRenderer worldRenderer;
+
+	@Shadow
+	private ClientTickTracker tricker = new ClientTickTracker(20.0f);
+
+	@Shadow public boolean skipGameRender;
+
 	/**
      * @author Runemoro
      * @reason Overwrite Minecraft.run()
@@ -193,11 +218,17 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
       } catch (Throwable var11) {
          crashReport2 = CrashReport.create(var11, "Initializing game");
          crashReport2.addElement("Initialization");
-         this.printCrashReport(addSystemDetailsToCrashReport(crashReport2));
+         //this.printCrashReport(addSystemDetailsToCrashReport(crashReport2));
          //return;
-		 this.stop();
-		  //displayInitErrorScreen(crashReport2);
-		  //return;
+		 //this.stop();
+		  if(config.catchInitCrashes) {
+			  displayInitErrorScreen(crashReport2);
+		  } else
+		  {
+			  this.printCrashReport(addSystemDetailsToCrashReport(crashReport2));
+			  this.stop();
+		  }
+		  return;
       }
 
 
@@ -336,7 +367,7 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 
 
             // Display the crash screen
-            openScreen(new GuiCrashScreen(report));
+            runGuiLoop(new GuiCrashScreen(report));
         } catch (Throwable t) {
             // The crash screen has crashed. Report it normally instead.
             LOGGER.error("An uncaught exception occurred while displaying the crash screen, making normal report instead", t);
@@ -346,16 +377,136 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
         }
     }
 
+	private void runGuiLoop(Screen screen) throws IOException
+	{
+		openScreen(screen);
+		this.focused = true;
+		while (running && currentScreen != null && !(currentScreen instanceof TitleScreen)) {
+			Window window = new Window(MinecraftClient.getInstance());
+			int i = window.getScaleFactor();
 
-	public void displayInitErrorScreen() {
+			if(Display.isCreated() && Display.isCloseRequested()) System.exit(0);
+
+			textureManager.tick();
+
+			attackCooldown = 10000;
+			currentScreen.handleInput();
+			currentScreen.getClass().getCanonicalName();
+			currentScreen.tick();
+			//currentScreen.getClass().getCanonicalName();
+
+
+			soundManager.tick();
+
+			mouse.updateMouse();
+
+			//currentScreen.
+
+			GlStateManager.pushMatrix();
+			GlStateManager.clear(16640);
+			fbo.bind(true);
+			GlStateManager.enableTexture(); //OG ONE
+
+
+			GlStateManager.viewPort(0, 0, width, height);
+
+			GlStateManager.clear(256);
+			GlStateManager.matrixMode(5889);
+			GlStateManager.loadIdentity();
+
+			GlStateManager.ortho(0.0D, window.getScaledWidth(), window.getScaledHeight(), 0, 1000, 3000);
+
+			GlStateManager.matrixMode(5888);
+			GlStateManager.loadIdentity();
+			GlStateManager.translatef(0, 0, -2000);
+			GlStateManager.clear(256);
+
+			int windowWidth = window.getWidth();
+			int windowHeight = window.getHeight();
+
+			//GlStateManager.enableBlend();
+
+			currentScreen.render(
+					(int) (Mouse.getX() * windowWidth / width),
+					(int) (windowHeight - Mouse.getY() * windowHeight / height - 1),
+					tricker.tickDelta
+			);
+
+			//GlStateManager.disableBlend();
+
+			fbo.endWrite();
+			GlStateManager.popMatrix();
+
+			GlStateManager.pushMatrix();
+			//fbo.draw(window.getWidth() * i, window.getHeight() * i);
+			fbo.draw(width, height);
+			GlStateManager.popMatrix();
+
+			//LegacyVanillaFix.LOGGER.info("RunGUILOOP FINISHED!");
+
+
+			this.updateDisplay();
+			Thread.yield();
+			Display.sync(60);
+			this.setGlErrorMessage("Legacy VanillaFix GUI Loop");
+		}
+	}
+
+	public void displayInitErrorScreen(CrashReport crashReport) {
 		//MinecraftClient.getInstance().
 		//crashReport = CrashReport.create(var11, "Initializing game");
 		//crashReport.addElement("Initialization");
 
 		CrashUtils.outputReport(crashReport2);
 		try {
+			options = new GameOptions(MinecraftClient.getInstance(), runDirectory);
+			resourcePacks.add(defaultResourcePack);
+			initializeTimerHackThread();
 
-			this.openScreen(new GuiInitErrorScreen(crashReport2));
+			setDefaultIcon();
+			setDisplayBounds();
+			setPixelFormat();
+			GLX.createContext();
+
+			this.fbo = new Framebuffer(width, height, true);
+			this.fbo.setClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+			registerMetadataSerializers();
+			this.loader = new ResourcePackLoader(this.resourcePackDir, new File(runDirectory, "server-resource-packs"), defaultResourcePack, metadataSerializer, options);
+			this.resourceManager = new ReloadableResourceManagerImpl(this.metadataSerializer);
+
+			this.languageManager = new LanguageManager(this.metadataSerializer, options.language);
+			this.resourceManager.registerListener(languageManager);
+
+			this.textureManager = new TextureManager(this.resourceManager);
+			this.resourceManager.registerListener(this.textureManager);
+
+			stitchTextures();
+
+			this.textRenderer = new TextRenderer(this.options, new Identifier("textures/font/ascii.png"), this.textureManager, false);
+			this.shadowTextRenderer = new TextRenderer(options, new Identifier("textures/font/ascii_sga.png"), this.textureManager, false);
+			this.resourceManager.registerListener(this.textRenderer);
+			this.resourceManager.registerListener(this.shadowTextRenderer);
+
+			soundManager = new SoundManager(resourceManager, options);
+			resourceManager.registerListener(soundManager);
+
+			// DO NOT INITIALISE THIS, CAUSES FURTHER CRASHING PROBLEMS
+			/*
+			gameRenderer = new GameRenderer(MinecraftClient.getInstance(), resourceManager);
+			resourceManager.registerListener(gameRenderer);
+
+			this.worldRenderer = new WorldRenderer(MinecraftClient.getInstance());
+			this.resourceManager.registerListener(this.worldRenderer);
+			*/
+
+			mouse = new MouseInput();
+
+			running = true;
+
+			//LegacyVanillaFix.LOGGER.info("DisplayInitErrorScreen ran!");
+
+			runGuiLoop(new GuiInitErrorScreen(crashReport2));
 		} catch (Throwable t) {
 			CrashReport additionalReport = CrashReport.create(t, "Displaying init error screen");
 			LOGGER.error("An uncaught exception occured while displaying the init error screen, making normal report instead", t);

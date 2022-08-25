@@ -8,8 +8,10 @@ package piper74.legacy.vanillafix.util;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.gui.screen.ConfirmChatLinkScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.widget.IdentifibleBooleanConsumer;
 import net.minecraft.client.gui.widget.OptionButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.crash.CrashReport;
@@ -19,6 +21,11 @@ import java.io.IOException;
 
 @Environment(EnvType.CLIENT)
 public class GuiCrashScreen extends GuiProblemScreen {
+
+    private int CrashReportNameWidth = 0;
+    private int CrashReportNameWidth2 = 0;
+    private int CrashReportName_Height = 0;
+
     public GuiCrashScreen(CrashReport report) {
         super(report);
     }
@@ -26,7 +33,13 @@ public class GuiCrashScreen extends GuiProblemScreen {
     @Override
     public void init() {
         super.init();
-        OptionButtonWidget mainMenuButton = new OptionButtonWidget(0, width / 2 - 50 - 115, height / 4 + 120 + 12, 110, 20, I18n.translate("legacy.vanillafix.gui.toTitle"));
+
+        if (report != null) {
+            CrashReportNameWidth = this.textRenderer.getStringWidth(report.getFile().getName());
+            CrashReportNameWidth2 = (this.width / 2) - (CrashReportNameWidth / 2);
+        }
+
+        OptionButtonWidget mainMenuButton = new OptionButtonWidget(0, width / 2 - 155, height / 4 + 120 + 12, 150, 20, I18n.translate("legacy.vanillafix.gui.toTitle"));
         this.buttons.add(mainMenuButton);
     }
 
@@ -36,6 +49,21 @@ public class GuiCrashScreen extends GuiProblemScreen {
         if (button.id == 0) {
             this.client.openScreen(new TitleScreen());
         }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int button) {
+        super.mouseClicked(mouseX, mouseY, button);
+
+        //if (report.getFile() != null) {
+            if (mouseX > this.CrashReportNameWidth2 && mouseX < this.CrashReportNameWidth2 + this.CrashReportNameWidth && mouseY > this.CrashReportName_Height && mouseY < this.CrashReportName_Height + 11) {
+                try {
+                    CrashUtils.openCrashReport(report);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        //}
     }
 
     @Override
@@ -54,7 +82,8 @@ public class GuiCrashScreen extends GuiProblemScreen {
 
         this.drawWithShadow(this.textRenderer, I18n.translate("legacy.vanillafix.crashscreen.paragraph2.line1"), x, y += 11, textColor);
 
-        this.drawCenteredString(this.textRenderer, report.getFile() != null ? "\u00A7n" + report.getFile().getName() : I18n.translate("vanillafix.crashscreen.reportSaveFailed"), width / 2, y += 11, 0x00FF00);
+        this.drawCenteredString(this.textRenderer, report != null && report.getFile() != null ? "\u00A7n" + report.getFile().getName() : I18n.translate("legacy.vanillafix.crashscreen.reportSaveFailed"), width / 2, y += 11, 0x00FF00);
+        CrashReportName_Height = y;
 
         this.drawWithShadow(this.textRenderer, I18n.translate("legacy.vanillafix.crashscreen.paragraph3.line1"), x, y += 12, textColor);
         this.drawWithShadow(this.textRenderer, I18n.translate("legacy.vanillafix.crashscreen.paragraph3.line2"), x, y += 9, textColor);

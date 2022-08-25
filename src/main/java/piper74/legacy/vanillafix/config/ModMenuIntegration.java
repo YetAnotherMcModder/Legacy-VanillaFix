@@ -1,12 +1,13 @@
 package piper74.legacy.vanillafix.config;
 
+import io.github.prospector.modmenu.api.ModMenuApi;
 import piper74.legacy.vanillafix.LegacyVanillaFix;
 import net.minecraft.client.gui.screen.Screen;
 
-// TODO:
-// Get this working in version 1.0.9
+// Note:
+// The way ModMenuApi was implemented it messes with
+// IntelliJ's Intellisense, just ignore it
 
-/*
 import java.util.function.Function;
 
 public class ModMenuIntegration implements ModMenuApi {
@@ -20,4 +21,3 @@ public class ModMenuIntegration implements ModMenuApi {
         return LegacyVanillaFix.MOD_ID;
     }
 }
-*/

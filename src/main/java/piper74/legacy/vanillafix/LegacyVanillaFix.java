@@ -25,6 +25,9 @@ public class LegacyVanillaFix implements ModInitializer {
 		initConfig();
 		//LOGGER.warn("Initalizing Legacy VanillaFix");
 		//System.out.println("Hello Fabric world!");
+
+		// DEBUG INIT CRASH
+		//throw new RuntimeException("Legacy VanillaFix init test crash");
 	}
 	
 		private static void initConfig() {

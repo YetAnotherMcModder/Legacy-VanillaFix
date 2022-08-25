@@ -4,7 +4,7 @@
   "version": "${version}",
 
   "name": "Legacy VanillaFix",
-  "description": "Bug fixes and optimizations for Minecraft",
+  "description": "Port of Runemoro's VanillaFix to Legacy Fabric with a few extras",
   "authors": [
     "piper74"
   ],
@@ -21,6 +21,9 @@
   "entrypoints": {
     "main": [
       "piper74.legacy.vanillafix.LegacyVanillaFix"
+    ],
+    "modmenu": [
+      "piper74.legacy.vanillafix.config.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -34,8 +37,5 @@
     "fabricloader": ">=0.12.0",
     "minecraft": "1.8.x"
 
-  },
-  "suggests": {
-    "abstractmethods": "0.1.1"
   }
 }

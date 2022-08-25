@@ -1,6 +1,5 @@
 package piper74.legacy.vanillafix.stacktrace.mixin;
 
-import piper74.legacy.vanillafix.TraceUtils;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import piper74.legacy.vanillafix.util.PatchedCrashReport;
@@ -55,30 +54,6 @@ public abstract class MixinCrashReport implements PatchedCrashReport {
         cause.printStackTrace(new PrintWriter(writer));
         return writer.toString();
     }
-
-     /**
-     * @reason Adds a list of mixins which have affected a class involved in the crash.
-	 * @author comp500
-     */
-	@Inject(method = "addStackTrace", at = @At(value = "FIELD", target = "Lnet/minecraft/util/crash/CrashReport;otherSections:Ljava/util/List;"))
-	private void mixintrace_addTrace(StringBuilder crashReportBuilder, CallbackInfo ci) {
-		int trailingNewlineCount = 0;
-		// Remove trailing \n
-		if (crashReportBuilder.charAt(crashReportBuilder.length() - 1) == '\n') {
-			crashReportBuilder.deleteCharAt(crashReportBuilder.length() - 1);
-			trailingNewlineCount++;
-		}
-		if (crashReportBuilder.charAt(crashReportBuilder.length() - 1) == '\n') {
-			crashReportBuilder.deleteCharAt(crashReportBuilder.length() - 1);
-			trailingNewlineCount++;
-		}
-		TraceUtils.printTrace(stackTrace, crashReportBuilder);
-		
-		while(trailingNewlineCount > 0) {
-		crashReportBuilder.append("\n");
-		trailingNewlineCount--;
-		}
-	}
 	
 	@Override
     public Set<ModMetadata> getSuspectedMods() {

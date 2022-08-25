@@ -3,8 +3,8 @@ plugins {
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -37,7 +37,9 @@ dependencies {
 	// Fabric API provides hooks for events, item registration, and more. As most mods will need this, it's included by default. 
 	// If you know for a fact you don't, it's not required and can be safely removed.
 	//modImplementation ("net.legacyfabric.legacy-fabric-api:legacy-fabric-api:${fabric_version}")
-	//modImplementation "io.github.boogiemonster1o1:modmenu:${modmenu_version}"
+
+	// Thanks to moehreag for helping me with adding ModMenu support!
+	modImplementation files("/libs/legacy-modmenu-1.1.01.8.9-dev.jar")
 
 	if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 		implementation 'org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209'

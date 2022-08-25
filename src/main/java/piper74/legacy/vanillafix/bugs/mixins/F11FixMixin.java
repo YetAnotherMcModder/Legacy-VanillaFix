@@ -1,3 +1,19 @@
+/******
+ MIT License
+
+ Copyright (c) 2020 comp500
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+******/
+
 // Code is from
 // https://github.com/comp500/BorderlessMining/blob/ef93ff0409d03211c4e7384dfad31e89edec5268/src/main/java/link/infra/borderlessmining/mixin/F11FixMixin.java
 

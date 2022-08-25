@@ -4,8 +4,7 @@
   "package": "piper74.legacy.vanillafix.stacktrace.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-  "MixinCrashReport",
-  "MixinCrashReportSection"
+  "MixinCrashReport"
   ],
   "client": [
   ],

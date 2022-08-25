@@ -14,6 +14,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.crash.CrashReport;
 import org.apache.commons.lang3.StringUtils;
+import piper74.legacy.vanillafix.LegacyVanillaFix;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,23 +36,17 @@ public abstract class GuiProblemScreen extends Screen{
     @Override
     public void init() {
         this.buttons.clear();
-        this.buttons.add(new ButtonWidget(1, width / 2 - 50, height / 4 + 120 + 12, 110, 20, I18n.translate("legacy.vanillafix.gui.openCrashReport")));
-        this.buttons.add(new ButtonWidget(2, width / 2 - 50 + 115, height / 4 + 120 + 12, 110, 20, I18n.translate("legacy.vanillafix.gui.uploadReportAndCopyLink")));
+        this.buttons.add(new ButtonWidget(1, width / 2 - 155 + 160, height / 4 + 120 + 12, 150, 20, I18n.translate("legacy.vanillafix.gui.uploadReportAndCopyLink")));
+
+        if(report == null)
+        {
+            this.buttons.get((int)0).active = false;
+        }
     }
 
     @Override
     protected void buttonClicked(ButtonWidget button) {
-        if (button.id == 1){
-            try {
-                CrashUtils.openCrashReport(report);
-            } catch (IOException e) {
-				button.message = I18n.translate("legacy.vanillafix.gui.failed");
-                button.active = false;
-                e.printStackTrace();
-            }
-        }
-		
-        if(button.id == 2){
+        if(button.id == 1){
             if(hasteLink == null){
                 try {
                     //hasteLink = CrashReportUpload.uploadToHastebin("https://www.toptal.com/developers/hastebin", "mccrash", report.asString());
@@ -74,6 +69,9 @@ public abstract class GuiProblemScreen extends Screen{
     private static final String LOADER_ID = "fabricloader";
 
     protected String getModListString() {
+        if(report == null)
+            return modListString = I18n.translate("legacy.vanillafix.crashscreen.identificationErrored");
+
 		if (modListString == null) {
             Set<ModMetadata> suspectedMods = ((PatchedCrashReport) report).getSuspectedMods();
             if (suspectedMods == null) {
