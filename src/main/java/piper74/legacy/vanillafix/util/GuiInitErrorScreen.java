@@ -50,6 +50,11 @@ public class GuiInitErrorScreen extends GuiProblemScreen{
         this.buttons.clear();
         this.buttons.add(new OptionButtonWidget(0, width / 2 - 155, height / 4 + 120 + 12, 154, 20, I18n.translate("menu.quit")));
         this.buttons.add(new OptionButtonWidget(1, width / 2 - 155 + 160, height / 4 + 120 + 12, 150, 20, I18n.translate("legacy.vanillafix.gui.uploadReportAndCopyLink")));
+
+        if(report == null)
+        {
+            this.buttons.get((int)1).active = false;
+        }
     }
 
     @Override
@@ -93,7 +98,7 @@ public class GuiInitErrorScreen extends GuiProblemScreen{
 
         this.getFontRenderer().drawWithShadow(I18n.translate("legacy.vanillafix.crashscreen.paragraph2.line1"), x, y += 11, textColor);
 
-        this.drawCenteredString(this.textRenderer, report.getFile() != null ? "\u00A7n" + report.getFile().getName() : I18n.translate("vanillafix.crashscreen.reportSaveFailed"), width / 2, y += 11, 0x00FF00);
+        this.drawCenteredString(this.textRenderer, report != null && report.getFile() != null ? "\u00A7n" + report.getFile().getName() : I18n.translate("legacy.vanillafix.crashscreen.reportSaveFailed"), width / 2, y += 11, 0x00FF00);
         CrashReportName_Height = y;
 
         this.getFontRenderer().drawWithShadow(I18n.translate("legacy.vanillafix.initerrorscreen.paragraph3.line1"), x, y += 12, textColor);

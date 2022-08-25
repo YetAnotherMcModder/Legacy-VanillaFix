@@ -11,7 +11,7 @@ legacy.vanillafix.crashscreen.paragraph1.line1=The following mod(s) have been id
 legacy.vanillafix.crashscreen.paragraph2.line1=A report has been generated, click the report to open:
 legacy.vanillafix.crashscreen.paragraph3.line1=You're encouraged to send this report's link to the mod's author to help
 legacy.vanillafix.crashscreen.paragraph3.line2=them fix the issue, click the "Upload and Copy link" to upload the report
-legacy.vanillafix.crashscreen.paragraph3.line3=and copy its link to  the clipboard. Since Legacy Vanillafix is installed,
+legacy.vanillafix.crashscreen.paragraph3.line3=and copy its link to the clipboard. Since Legacy Vanillafix is installed,
 legacy.vanillafix.crashscreen.paragraph3.line4=you can keep playing despite the crash.
 
 legacy.vanillafix.initerrorscreen.title=Minecraft failed to start!
@@ -19,7 +19,7 @@ legacy.vanillafix.initerrorscreen.summary=An error during startup prevented Mine
 legacy.vanillafix.initerrorscreen.paragraph2.line1=A report has been generated, click the report to open:
 legacy.vanillafix.initerrorscreen.paragraph3.line1=You're encouraged to send this report's link to the mod's author to help
 legacy.vanillafix.initerrorscreen.paragraph3.line2=them fix the issue, click the "Upload and Copy link" to upload the report
-legacy.vanillafix.initerrorscreen.paragraph3.line3=and copy its link to clipboard. Unfortunately, it is not possible to keep
+legacy.vanillafix.initerrorscreen.paragraph3.line3=and copy its link to the clipboard. Unfortunately, it is not possible to keep
 legacy.vanillafix.initerrorscreen.paragraph3.line4=loading Minecraft due to this error.
 
 legacy.vanillafix.config.disableinitalchunkload=Disable inital chunkload

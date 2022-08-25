@@ -8,10 +8,8 @@ package piper74.legacy.vanillafix.util;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.screen.ConfirmChatLinkScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.widget.IdentifibleBooleanConsumer;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.OptionButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.crash.CrashReport;

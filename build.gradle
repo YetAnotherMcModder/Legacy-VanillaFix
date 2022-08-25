@@ -39,7 +39,7 @@ dependencies {
 	//modImplementation ("net.legacyfabric.legacy-fabric-api:legacy-fabric-api:${fabric_version}")
 
 	// Thanks to moehreag for helping me with adding ModMenu support!
-	modImplementation files("/libs/legacy-modmenu-1.1.01.8.9-dev.jar")
+	modImplementation files("/libs/legacy-modmenu-1.1.0_1.8.9-dev.jar")
 
 	if (System.getProperty("os.name").toLowerCase().contains("mac")) {
 		implementation 'org.lwjgl.lwjgl:lwjgl_util:2.9.4-nightly-20150209'
