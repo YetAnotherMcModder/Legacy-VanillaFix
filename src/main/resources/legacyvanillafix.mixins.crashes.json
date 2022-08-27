@@ -2,6 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "package": "piper74.legacy.vanillafix.crashes.mixins",
+  "plugin": "piper74.legacy.vanillafix.crashes.CrashesMixinPlugin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   ],

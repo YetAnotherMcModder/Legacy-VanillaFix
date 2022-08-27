@@ -26,7 +26,7 @@ import net.minecraft.client.resource.ResourcePackLoader;
 import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.util.Window;
+import piper74.legacy.vanillafix.crashes.compatibility.CWindow;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.resource.DefaultResourcePack;
 import net.minecraft.resource.ReloadableResourceManager;
@@ -382,7 +382,12 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 		openScreen(screen);
 		this.focused = true;
 		while (running && currentScreen != null && !(currentScreen instanceof TitleScreen)) {
-			Window window = new Window(MinecraftClient.getInstance());
+
+			// Restore compatibility with Minecraft 1.8
+			// No function here needs the Window class as an argument,
+			// so we can work around the crash in 1.8 by
+			// implementing our own custom Window class
+			CWindow window = new CWindow(MinecraftClient.getInstance(), width, height);
 			int i = window.getScaleFactor();
 
 			if(Display.isCreated() && Display.isCloseRequested()) System.exit(0);
@@ -391,7 +396,7 @@ public abstract class MixinMinecraftClient implements ThreadExecutor, Snoopable 
 
 			attackCooldown = 10000;
 			currentScreen.handleInput();
-			currentScreen.getClass().getCanonicalName();
+			//currentScreen.getClass().getCanonicalName();
 			currentScreen.tick();
 			//currentScreen.getClass().getCanonicalName();
 
